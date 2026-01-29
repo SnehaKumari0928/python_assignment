@@ -1,65 +1,67 @@
 import logging
 
-logging.basicConfig(level="INFO")
+logging.basicConfig(level=logging.INFO,
+                    format = "%(asctime)s - %(levelname)s - %(message)s"
+                    )
 
 
 class InsufficientFundsError(Exception):
-     def __init__(self):
-          return None
+     pass
+     
       
 class InvalidAmountError(Exception):
-     def __init__(self):
-          return None
+     pass
      
 
 class BankAccount:
-     transactions = []
      def __init__(self,account_number,initial_balance = 0):
           self.__account_number = account_number
-          self.__initial_balance = initial_balance
+          self.__balance = initial_balance
+          self.__transactions = []
 
      def deposit(self, amount):
-          if type(amount) != int :
-                raise InvalidAmountError
-          self.__initial_balance += amount
+          if amount <= 0 :
+                raise InvalidAmountError("Deposit amount must be positive")
+          self.__balance += amount
               
-
-          BankAccount.transactions.append({"type":"deposit","amount":amount,"balance":self.__initial_balance})
+          transaction = {"type":"deposit","amount":amount,"balance":self.__balance}
+          self.__transactions.append(transaction)
+          logging.info(transaction)
+          
     
      def withdraw(self,amount):
-            if self.__initial_balance < amount:
-              raise InsufficientFundsError
+            if self.__balance < amount:
+              raise InsufficientFundsError("Insuffuicient balance")
             else:
-              self.__initial_balance -= amount
-            BankAccount.transactions.append({"type":"withdraw","amount":amount,"balance":self.__initial_balance})
+              self.__balance -= amount
+            transaction = {"type":"withdraw","amount":amount,"balance":self.__initial_balance}
+            self.__transactions.append(transaction)
+            logging.info(transaction)
 
      def get_balance(self):
-          return f"Total balance in account is {self.__initial_balance}"
+          return f"Total balance in account is {self.__balance}"
      
      def get__transaction_history(self):
-          return BankAccount.transactions
+          return self.__transactions
      
      def __str__(self):
-          return f"Account Number : {self.__account_number}, Balance : {self.__initial_balance}"
+          return f"Account Number : {self.__account_number} | Balance : {self.__balance}"
      
-     def log_transaction(self):
-          logging.info(BankAccount.transactions)
                
                
-a1 = BankAccount("8678845456566")
+account = BankAccount("8678845456566")
 
 try:
-     a1.deposit("900")
-     a1.withdraw(2000)
+     account.deposit(-999)
+     account.withdraw(2000)
 
 except InsufficientFundsError as e:
-     print(f"Error:{e} Insufficient balance")
+     print(f"Error:{e}")
 except InvalidAmountError as e:
-     print(f"Error:{e} Please enter valid amount")
-a1.deposit(1000)
-print(a1.get_balance())
-a1.log_transaction()
-
-print(a1.get__transaction_history())
+     print(f"Error:{e}")
+account.deposit(1000)
+print(account.get_balance())
+print(account)
+print(account.get__transaction_history())
      
           

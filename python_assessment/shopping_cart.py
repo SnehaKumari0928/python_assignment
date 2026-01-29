@@ -30,6 +30,6 @@ cart.add_item("Apple",2.5,3)
 cart.add_item("Banana",1.2,5)
 cart.remove_item("Banana")
 print(cart)
-print(f"Total: ${cart.get_total():.2f}")
+print(f"Total: ${cart.get_total()}")
 print(f"Items: {len(cart)}")
 
